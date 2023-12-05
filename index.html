@@ -49,9 +49,9 @@
             // Function to get visitor's information
             const getVisitorInfo = async () => {
                 try {
-                    const ipResponse = await fetch('https://api64.ipify.org?format=json');
+                    const ipResponse = await fetch('https://ipinfo.io/json');
                     const ipData = await ipResponse.json();
-                    const ip = ipData.ip;
+                    const ip = `${addressData.ip};
 
                     // Switched to a different service for fetching location info
                     const addressResponse = await fetch('https://ipinfo.io/json');

